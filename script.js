@@ -174,20 +174,40 @@ btnTransfer.addEventListener('click', function (e) {
     acc => acc.username === inputTransferTo.value
   );
   // console.log(receiverAcc, amount);
-////clearing field////////
-inputTransferAmount.value=inputTransferTo.value='';
+  ////clearing field////////
+  inputTransferAmount.value = inputTransferTo.value = '';
 
   if (
     amount > 0 &&
     receiverAcc &&
     currentAccount.balance >= amount &&
-    receiverAcc.username !== currentAccount.username
+    receiverAcc?.username !== currentAccount.username
   ) {
     currentAccount.movements.push(-amount);
     receiverAcc.movements.push(amount);
 
-  
     ////////updating ui after transections///////////
     updataUI(currentAccount);
   }
+});
+
+///////////closing accounts///////////////
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    // console.log(index);
+    accounts.splice(index, 1);
+  }
+  ///updating UI
+  containerApp.style.opacity=0;
+///emptying the fields
+inputCloseUsername.value = inputClosePin.value = '';
+
+
 });
