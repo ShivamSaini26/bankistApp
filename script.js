@@ -83,7 +83,7 @@ const displayMovements = function (movements) {
     const html = `
 <div class="movements__row">
   <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-  <div class="movements__value">${mov}€</div>
+  <div class="movements__value">${mov}₹</div>
 `;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
@@ -92,7 +92,7 @@ const displayMovements = function (movements) {
 //calculating  total balance/////////
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `${acc.balance}₹`;
 };
 
 //displaying labels
@@ -101,12 +101,12 @@ const calDisplaySummary = function (acc) {
   const income = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${income}€`;
+  labelSumIn.textContent = `${income}₹`;
   //out
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out)}€`;
+  labelSumOut.textContent = `${Math.abs(out)}₹`;
 
   //interest
   const interest = acc.movements
@@ -114,7 +114,7 @@ const calDisplaySummary = function (acc) {
     .map(deposite => (deposite * acc.interestRate) / 100)
     .filter(int => int >= 1) //deposite should be >=1
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${interest}₹`;
 };
 
 /////////calulating usernames/////////////
@@ -191,6 +191,18 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+//////loans/////
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    //10% of amount
+    currentAccount.movements.push(amount);
+    updataUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
 ///////////closing accounts///////////////
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
@@ -205,9 +217,7 @@ btnClose.addEventListener('click', function (e) {
     accounts.splice(index, 1);
   }
   ///updating UI
-  containerApp.style.opacity=0;
-///emptying the fields
-inputCloseUsername.value = inputClosePin.value = '';
-
-
+  containerApp.style.opacity = 0;
+  ///emptying the fields
+  inputCloseUsername.value = inputClosePin.value = '';
 });
