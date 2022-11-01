@@ -74,11 +74,13 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 // STARTING DEVELOPMENT OF THE APP
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   //enptying the container
   containerMovements.innerHTML = '';
 
-  movements.forEach(function (mov, i) {
+  ///////////sorting function//////////////
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
 <div class="movements__row">
@@ -191,7 +193,7 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
-//////loans/////
+//////loans////////////////
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputLoanAmount.value);
@@ -220,4 +222,12 @@ btnClose.addEventListener('click', function (e) {
   containerApp.style.opacity = 0;
   ///emptying the fields
   inputCloseUsername.value = inputClosePin.value = '';
+});
+
+///sorting the accounts data////////
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
